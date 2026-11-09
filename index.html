@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Club - Pro Creator Studio & DEX Wallet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #091326 0%, #102a45 40%, #2a0845 100%);
+            color: #ffffff;
+            -webkit-user-select: none;
+            user-select: none;
+            overflow-x: hidden;
+        }
+
+        .profile-container {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 65px;
+            padding-bottom: 125px;
+            position: relative;
+        }
+
+        /* Top Header */
+        .sub-header {
+            width: 100%;
+            height: 55px;
+            background: rgba(10, 25, 50, 0.95);
+            border-bottom: 1.5px solid #00e5ff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 15px rgba(0, 229, 255, 0.3);
+        }
+
+        .left-header-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-toggle-btn {
+            background: linear-gradient(135deg, #00e5ff, #0066ff);
+            border: none;
+            color: #000;
+            font-size: 18px;
+            font-weight: 900;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+        }
+
+        .top-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #02122c;
+            border: 2px solid #ff007f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.6);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .top-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .top-user-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .top-user-name {
+            font-size: 11px;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 0 0 8px #00e5ff;
+            max-width: 100px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .top-user-id {
+            font-size: 9px;
+            color: #00ff66;
+            font-weight: 700;
+        }
+
+        .right-header-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn {
+            background: rgba(255, 0, 127, 0.2);
+            border: 1.5px solid #ff007f;
+            color: #ff007f;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        /* Secret Trigger Light */
+        .secret-trigger-light {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #00ff66;
+            box-shadow: 0 0 10px #00ff66, 0 0 20px #00ff66;
+            cursor: pointer;
+            border: 1.5px solid #ffffff;
+            transition: transform 0.2s ease;
+        }
+
+        .secret-trigger-light:active {
+            transform: scale(0.85);
+        }
+
+        /* Left Side Drawer Menu */
+        .side-drawer {
+            position: fixed;
+            top: 55px;
+            left: -260px;
+            width: 250px;
+            height: calc(100% - 55px);
+            background: rgba(9, 20, 40, 0.98);
+            border-right: 2px solid #00e5ff;
+            z-index: 1100;
+            transition: left 0.3s ease-in-out;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            backdrop-filter: blur(15px);
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+        }
+
+        .side-drawer.open {
+            left: 0;
+        }
+
+        .drawer-item {
+            padding: 11px 14px;
+            background: rgba(0, 229, 255, 0.08);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .drawer-item:hover {
+            background: linear-gradient(135deg, #00e5ff, #ff007f);
+            color: #000;
+        }
+
+        /* Panels Container */
+        .panels-container {
+            width: 92%;
+            max-width: 400px;
+            margin-top: 15px;
+            z-index: 100;
+        }
+
+        .panel-section {
+            width: 100%;
+            background: rgba(12, 28, 55, 0.96);
+            border: 2px solid #00e5ff;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.35);
+            backdrop-filter: blur(10px);
+            display: none;
+            animation: slideDown 0.3s ease-in-out;
+            max-height: 75vh;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .panel-section.active {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-section h3 {
+            font-size: 14px;
+            font-weight: 800;
+            color: #00e5ff;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(0, 229, 255, 0.3);
+            padding-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-shadow: 0 0 5px #00e5ff;
+        }
+
+        .close-panel-btn {
+            background: none;
+            border: none;
+            color: #ff007f;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 10px;
+            color: #80e5ff;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%;
+            padding: 9px 10px;
+            background: #061122;
+            border: 1.5px solid #00e5ff;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #00e5ff, #0066ff);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.6);
+            transition: transform 0.2s;
+            margin-top: 6px;
+        }
+
+        .signup-redirect-btn {
+            background: linear-gradient(135deg, #ff0044, #ff6600);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(255, 0, 68, 0.5);
+            margin-top: 8px;
+        }
+
+        /* Home Channel Card */
+        .home-channel-card {
+            width: 92%;
+            max-width: 400px;
+            background: rgba(12, 28, 55, 0.9);
+            border: 2px solid #ff007f;
+            border-radius: 18px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 25px rgba(255, 0, 127, 0.35);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .home-channel-card.hidden {
+            display: none;
+        }
+
+        .main-channel-avatar {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            border: 3px solid #00e5ff;
+            background: #02122c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.7);
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .main-channel-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .main-channel-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 0 0 10px #00e5ff;
+        }
+
+        .main-channel-handle {
+            font-size: 12px;
+            color: #00ff66;
+            font-weight: 700;
+            margin-top: 3px;
+        }
+
+        .main-channel-bio {
+            font-size: 11px;
+            color: #d0f0ff;
+            margin-top: 10px;
+            font-style: italic;
+            line-height: 1.4;
+            background: rgba(0, 229, 255, 0.08);
+            padding: 8px 12px;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        /* Metrics Grid */
+        .stats-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .stat-card-sm {
+            background: rgba(0, 229, 255, 0.08);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 10px;
+            padding: 8px 4px;
+            text-align: center;
+        }
+
+        .stat-num-sm {
+            font-size: 14px;
+            font-weight: 900;
+            color: #00ff66;
+        }
+
+        .stat-lbl-sm {
+            font-size: 9px;
+            color: #80e5ff;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        /* Reward Grid */
+        .reward-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .reward-box-card {
+            background: rgba(6, 17, 34, 0.95);
+            border: 1.5px solid #00e5ff;
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+        }
+
+        .reward-box-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+
+        .reward-token-box {
+            background: #02122c;
+            border: 1px solid #00ff66;
+            border-radius: 6px;
+            padding: 3px 8px;
+            font-size: 10px;
+            font-weight: 900;
+            color: #00ff66;
+            margin: 4px 0;
+            width: 100%;
+        }
+
+        .claim-sm-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #ff007f, #ffaa00);
+            border: none;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 6px 4px;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(255, 0, 127, 0.5);
+        }
+
+        .claim-sm-btn.claimed {
+            background: #333;
+            color: #777;
+            box-shadow: none;
+            cursor: default;
+        }
+
+        /* Monetization Card View Styles */
+        .monetize-card-item {
+            background: rgba(0, 229, 255, 0.05);
+            border: 1.5px solid rgba(0, 229, 255, 0.4);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);
+        }
+
+        .monetize-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 900;
+            color: #00ff66;
+        }
+
+        .monetize-card-desc {
+            font-size: 10px;
+            color: #d0f0ff;
+            font-weight: 700;
+        }
+
+        .monetize-claim-btn {
+            background: #222;
+            border: 1px solid #444;
+            color: #666;
+            padding: 7px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 900;
+            cursor: not-allowed;
+            margin-top: 6px;
+        }
+
+        .monetize-claim-btn.unlocked {
+            background: linear-gradient(135deg, #ff007f, #ffaa00);
+            color: #fff;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 8px rgba(255, 0, 127, 0.4);
+        }
+
+        .monetize-claim-btn.claimed {
+            background: #111;
+            color: #555;
+            cursor: default;
+            box-shadow: none;
+        }
+
+        /* Task Item Card */
+        .task-item-box {
+            background: rgba(0, 229, 255, 0.06);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        /* Affiliate Card Item */
+        .affiliate-card-item {
+            background: rgba(255, 0, 102, 0.05);
+            border: 1.5px solid rgba(255, 0, 102, 0.4);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        /* Bottom Live Price Ticker Bar */
+        .live-price-ticker {
+            position: fixed;
+            bottom: 65px;
+            left: 0;
+            width: 100%;
+            height: 38px;
+            background: rgba(6, 17, 34, 0.95);
+            border-top: 1px solid rgba(0, 229, 255, 0.4);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.4);
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            z-index: 999;
+            backdrop-filter: blur(8px);
+        }
+
+        .ticker-track {
+            display: flex;
+            gap: 25px;
+            white-space: nowrap;
+            animation: tickerScroll 30s linear infinite;
+        }
+
+        .ticker-item {
+            font-size: 11px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ticker-up {
+            color: #00ff66;
+        }
+
+        .ticker-down {
+            color: #ff0055;
+        }
+
+        @keyframes tickerScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Bottom Fixed Nav */
+        .bottom-nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 65px;
+            background: rgba(10, 25, 50, 0.95);
+            border-top: 1.5px solid #00e5ff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-btn {
+            flex: 1;
+            height: 50px;
+            background: transparent;
+            border: none;
+            color: #80e5ff;
+            font-size: 10px;
+            font-weight: 800;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .nav-btn span {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+
+        /* Mini Compact Pure Black Modal Box */
+        .secret-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .secret-modal-overlay.active {
+            display: flex;
+        }
+
+        .secret-modal-box {
+            width: 180px;
+            height: 45px;
+            background: #000000;
+            border: none;
+            outline: none;
+            box-shadow: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .secret-pin-input {
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-size: 15px;
+            text-align: center;
+            letter-spacing: 2px;
+            caret-color: #00ff66;
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <!-- Top Header -->
+        <div class="sub-header">
+            <div class="left-header-group">
+                <button class="menu-toggle-btn" onclick="toggleDrawer()">☰</button>
+                <div class="top-avatar" id="avatarDisplay">👤</div>
+                <div class="top-user-info">
+                    <span class="top-user-name" id="topUserName">Guest Creator</span>
+                    <span class="top-user-id" id="topUserId">ID: Unverified</span>
+                </div>
+            </div>
+
+            <div class="right-header-group">
+                <!-- Secret Trigger Light -->
+                <div class="secret-trigger-light" onclick="openSecretModal()"></div>
+                <button class="back-btn" onclick="goBack()">← Back</button>
+            </div>
+        </div>
+
+        <!-- Left Side Drawer Menu -->
+        <div class="side-drawer" id="sideDrawer">
+            <div style="font-size: 14px; font-weight: 900; color: #00e5ff; border-bottom: 1px solid rgba(0,229,255,0.3); padding-bottom: 8px;">⚙️ CONTROL MENU</div>
+            <div class="drawer-item" onclick="switchTab('Edit'); toggleDrawer();">✏️ Edit Profile & Logo</div>
+            <div class="drawer-item" onclick="switchTab('Verify'); toggleDrawer();">🔐 Verify MGSML ID</div>
+            <div class="drawer-item" onclick="switchTab('Channel'); toggleDrawer();">📺 Manage Channel</div>
+            <div class="drawer-item" onclick="switchTab('Wallet'); toggleDrawer();">💰 My Wallet & DEX Swap</div>
+            <div class="drawer-item" onclick="switchTab('Status'); toggleDrawer();">📊 Analytics & Status</div>
+            <div class="drawer-item" onclick="switchTab('Monetize'); toggleDrawer();" style="color: #00ff66; border-color: #00ff66;">🌟 Monetize Channel</div>
+            <div class="drawer-item" onclick="switchTab('Tasks'); toggleDrawer();" style="color: #ffaa00; border-color: #ffaa00;">🎯 Daily Tasks & Spin</div>
+            <div class="drawer-item" onclick="switchTab('Affiliate'); toggleDrawer();" style="color: #ff007f; border-color: #ff007f;">🔗 Affiliate Program</div>
+        </div>
+
+        <!-- Panels Container -->
+        <div class="panels-container">
+            <!-- 1. Verify ID Panel -->
+            <div class="panel-section" id="panelVerify">
+                <h3>🔐 MGSML ID Verification <button class="close-panel-btn" onclick="closePanels()">✖</button></h3>
+                <div class="input-group">
+                    <label>Enter Unique ID / Mobile Number</label>
+                    <input type="text" id="verifyInput" placeholder="Enter MGSML ID">
+                </div>
+                <button class="action-btn" onclick="verifyId()">Verify ID</button>
+                <button class="action-btn signup-redirect-btn" onclick="redirectToSignup()">Register / Sign Up (MGSML)</button>
+            </div>
+
+            <!-- 2. Create Channel Panel -->
+            <div class="panel-section" id="panelChannel">
+                <h3>📺 Create & Launch Channel <button class="close-panel-btn" onclick="closePanels()">✖</button></h3>
+                <div class="input-group">
+                    <label>Channel Name</label>
+                    <input type="text" id="channelNameInput" placeholder="Enter channel name">
+                </div>
+                <div class="input-group">
+                    <label>Channel Bio / Description</label>
+                    <textarea id="channelBioInput" placeholder="Write description..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Upload Channel Logo from Gallery</label>
+                    <input type="file" id="channelLogoFile" accept="image/*">
+                </div>
+                <button class="action-btn" onclick="saveChannel()">Save & Launch Channel</button>
+            </div>
+
+            <!-- 3. Edit Profile Panel -->
+            <div class="panel-section" id="panelEdit">
+                <h3>✏️ Edit Profile & Logo <button class="close-panel-btn" onclick="closePanels()">✖</button></h3>
+                <div class="input-group">
+                    <label>Change Channel Name</label>
+                    <input type="text" id="editNameInput">
+                </div>
+                <div class="input-group">
+                    <label>Change Description / Bio</label>
+                    <textarea id="editBioInput"></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Choose New Logo Photo</label>
+                    <input type="file" id="editLogoFile" accept="image/*">
+                </div>
+                <button class="action-btn" onclick="updateProfile()">Save All Changes</button>
+            </div>
+
+            <!-- 4. Wallet Panel -->
+            <div class="panel-section" id="panelWallet">
+                <h3>💰 MGSML DEX Wallet & Swap <button class="close-panel-btn" onclick="closePanels()">✖</button></h3>
+                
+                <div class="input-group">
+                    <label>Select Token Asset ▼</label>
+                    <select id="walletTokenDropdown" onchange="updateWalletDisplay()" style="cursor: pointer;"></select>
+                </div>
+
+                <div style="text-align: center; padding: 12px; background: rgba(0,255,102,0.1); border: 1.5px solid #00ff66; border-radius: 12px; margin-bottom: 20px;">
+                    <div style="font-size: 26px; font-weight: 900; color: #00ff66;" id="walletBalanceDisplay">0</div>
+                    <div style="font-size: 9px; color: #fff; font-weight: 700; margin-top: 2px;" id="walletActiveTokenLabel">AVAILABLE BALANCE</div>
+                </div>
+
+                <!-- Social Club Wallet Section -->
+                <div style="background: rgba(255,0,127,0.06); border: 1.5px solid #ff007f; border-radius: 14px; padding: 14px; margin-bottom: 20px;">
+                    <div style="font-size: 12px; font-weight: 900; color: #ff007f; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                        <span>🌐 Social Club Exclusive Wallet</span>
+                        <button onclick="createSocialClubWallet()" style="background:#00e5ff; border:none; color:#000; font-size:9px; font-weight:800; padding:5px 8px; border-radius:6px; cursor:pointer;">Create Wallet</button>
+                    </div>
+
+                    <div class="input-group" style="margin-bottom: 8px;">
+                        <label>Your MGSML-SCS Wallet Address</label>
+                        <input type="text" id="digitalWalletAddressBox" placeholder="Click 'Create Wallet' to generate" readonly>
+                    </div>
+
+                    <button class="action-btn" style="background: linear-gradient(135deg, #00e5ff, #0066ff); color: #000; padding: 8px;" onclick="copyWalletAddress()">📋 Copy Address</button>
+                </div>
+
+                <!-- Two-Way DEX Swap Engine -->
+                <div style="background: rgba(0,229,255,0.06); border: 1.5px solid #00e5ff; border-radius: 14px; padding: 14px; margin-bottom: 20px;">
+                    <div style="font-size: 12px; font-weight: 900; color: #00e5ff; margin-bottom: 10px;">
+                        <span>🔄 Two-Way DEX Swap Engine (20 Tokens)</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label>From (Source Token)</label>
+                        <select id="swapFromTokenDropdown" style="cursor: pointer; margin-bottom: 6px;"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>To (Destination Token)</label>
+                        <select id="swapToTokenDropdown" style="cursor: pointer; margin-bottom: 6px;"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Swap Amount</label>
+                        <input type="number" id="swapAmountInput" placeholder="Enter amount to swap">
+                    </div>
+
+                    <button class="action-btn" style="background: linear-gradient(135deg, #ff007f, #ffaa00); color: #fff;" onclick="executeTwoWaySwap()">Execute DEX Swap (2% Fee)</button>
+                </div>
+
+                <!-- Mini Exchange Transfer Section -->
+                <div style="background: rgba(0,255,102,0.06); border: 1.5px solid #00ff66; border-radius: 14px; padding: 14px;">
+                    <div style="font-size: 12px; font-weight: 900; color: #00ff66; margin-bottom: 10px;">
+                        <span>🚀 Transfer to Mini Exchange</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Mini Exchange Address (Paste Here)</label>
+                        <input type="text" id="miniExchangeAddressInput" placeholder="Paste destination address">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Transfer Amount (MGSML)</label>
+                        <input type="number" id="transferAmountInput" placeholder="Enter MGSML amount">
+                    </div>
+
+                    <div class="input-group">
+                        <label>🔒 Enter Security Password (12+ Characters)</label>
+                        <input type="password" id="transferMpinInput" placeholder="Enter security password">
+                    </div>
+
+                    <button class="action-btn" style="background: linear-gradient(135deg, #00ff66, #009933); color: #000;" onclick="transferToMiniExchangeSecure()">Confirm & Transfer</button>
+                </div>
+            </div>
+
+            <!-- 5. Status & Rewards Panel -->
+            <div class="panel-section" id="panelStatus">
+                <h3>📊 Creator Status & Earnings <button class="close-panel-btn" onclick="closePanels()">✖</button></h3>
+                
+                <div class="stats-grid-3">
+                    <div class="stat-card-sm"><div class="stat-num-sm" id="statusSubCount">125</div><div class="stat-lbl-sm">Subs</div></div>
+                    <div class="stat-card-sm"><div class="stat-num-sm">4</div><div class="stat-lbl-sm">Videos</div></div>
+                    <div class="stat-card-sm"><div class="stat-num-sm" id="statusLikeCount">1.4K</div><div class="stat-lbl-sm">Likes</div></div>
+                </div>
+
+                <!-- Quick Action Buttons -->
+                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                    <button class="action-btn" style="flex: 1; background: linear-gradient(135deg, #00e5ff, #0066ff); color: #000; font-size: 11px; padding: 8px;" onclick="likeChannel()">👍 Like Channel</button>
+                    <button class="action-btn" style="flex: 1; background: linear-gradient(135deg, #ff007f, #ffaa00); color: #fff; font-size: 11px; padding: 8px;" onclick="switchTab('Affiliate')">🔗 Open Affiliate</button>
+                </div>
+
+                <!-- Short Video Tips Balance -->
+                <div style="background: rgba(255,170,0,0.1); border: 1.5px solid #ffaa00; border-radius: 12px; padding: 10px; margin-bottom: 12px; text-align: center;">
+                    <div style="font-size: 10px; font-weight: 800; color: #ffaa00;">🎬 Short Video Tips Balance</div>
+                    <div style="font-size: 20px; font-weight: 900; color: #fff; margin: 4px 0;" id="shortVideoTipsBalance">25.00 MGSML</div>
+                    <button class="claim-sm-btn" id="btnClaimTips" onclick="claimShortVideoTips()" style="background: linear-gradient(135deg, #ffaa00, #ff007f);">Claim Tips to Wallet</button>
+                </div>
+
+                <div style="font-size: 11px; font-weight: 800; color: #ff007f; margin: 10px 0 6px 0;">🪙 Activity Rewards (Token Value Boxes)</div>
+                
+                <div class="reward-grid">
+                    <div class="reward-box-card">
+                        <div class="reward-box-title">🎬 Watch Movies</div>
+                        <div class="reward-token-box" id="boxVal_movie">+8 Units</div>
+                        <button class="claim-sm-btn" id="btnClaimMovie" onclick="claimCoin('movie', 8)">Ready to Earn</button>
+                    </div>
+
+                    <div class="reward-box-card">
+                        <div class="reward-box-title">👍 Video Likes</div>
+                        <div class="reward-token-box" id="boxVal_like">+5 Units</div>
+                        <button class="claim-sm-btn" id="btnClaimLike" onclick="claimCoin('like', 5)">Ready to Earn</button>
+                    </div>
+
+                    <div class="reward-box-card">
+                        <div class="reward-box-title">💬 Comments</div>
+                        <div class="reward-token-box" id="boxVal_comment">+3 Units</div>
+                        <button class="claim-sm-btn" id="btnClaimComment" onclick="claimCoin('comment', 3)">Ready to Earn</button>
+                    </div>
+
+                    <div class="reward-box-card">
+                        <div class="reward-box-title">🔗 Video Shares</div>
+                        <div class="reward-token-box" id="boxVal_share">+4 Units</div>
+                        <button class="claim-sm-btn" id="btnClaimShare" onclick="claimCoin('share', 4)">Ready to Earn</button>
+                    </div>
+
+                    <div class="reward-box-card" style="grid-column: span 2;">
+                        <div class="reward-box-title">📹 Video Upload Reward</div>
+                        <div class="reward-token-box" id="boxVal_upload">+10 Units</div>
+                        <button class="claim-sm-btn" id="btnClaimUpload" onclick="claimCoin('upload', 10)">Ready to Earn</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Monetize Channel Panel -->
+            <div class="panel-section" id="panelMonetize">
+                <h3>🌟 Monetize Channel Roadmap <button class="close-panel-btn" onclick="closePanels()">✖</button></h3>
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;" id="monetizeCardsContainer"></div>
+            </div>
+
+            <!-- 7. Daily Tasks & Spin Engine -->
+            <div class="panel-section" id="panelTasks">
+                <h3>🎯 Daily Tasks & Spin Engine <button class="close-panel-btn" onclick="closePanels()">✖</button></h3>
+                
+                <div style="background: rgba(0,229,255,0.08); border: 1.5px solid #00e5ff; border-radius: 12px; padding: 12px; margin-bottom: 14px;">
+                    <div style="font-size: 12px; font-weight: 900; color: #00e5ff; margin-bottom: 6px;">🚀 Ad-Powered Video Boost (Social Club)</div>
+                    <div style="font-size: 9.5px; color: #d0f0ff; margin-bottom: 8px;">Watch full ads to instantly boost video reach (1 Full Ad = 5 Views).</div>
+                    
+                    <div class="input-group" style="margin-bottom: 6px;">
+                        <label>Social Club Video Link / ID</label>
+                        <input type="text" id="boostVideoLinkInput" placeholder="Paste Social Club video link">
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #00ff66; margin-bottom: 8px; font-weight: bold;">
+                        <span>Watched Ads: <span id="watchedAdsCount">0</span></span>
+                        <span>Video Reach: <span id="videoReachCount">0</span> Users</span>
+                    </div>
+
+                    <button class="action-btn" style="background: linear-gradient(135deg, #00e5ff, #0066ff); color: #000; padding: 8px;" onclick="triggerSecureAdWatch('video_boost')">📺 Watch Full Ad & Boost</button>
+                </div>
+
+                <div style="background: rgba(255,170,0,0.08); border: 1.5px solid #ffaa00; border-radius: 12px; padding: 12px; margin-bottom: 14px; text-align: center;">
+                    <div style="font-size: 13px; font-weight: 900; color: #ffaa00; margin-bottom: 4px;">🎡 Lucky Spin & Win</div>
+                    <div style="font-size: 10px; color: #fff; margin-bottom: 8px;">Spin daily to win free MGSML tokens!</div>
+                    <button class="action-btn" style="background: linear-gradient(135deg, #ffaa00, #ff007f); color: #fff; padding: 8px;" onclick="spinLuckyWheel()">🎁 Spin Now (Free)</button>
+                </div>
+
+                <div style="font-size: 11px; font-weight: 900; color: #00e5ff; margin-bottom: 8px;">📋 15 Master Tasks & Engagement System</div>
+                <div style="display: flex; flex-direction: column; gap: 8px;" id="tasksListContainer"></div>
+            </div>
+
+            <!-- 8. Affiliate Program Panel -->
+            <div class="panel-section" id="panelAffiliate">
+                <h3>🔗 Affiliate Program (10-Tiers) <button class="close-panel-btn" onclick="closePanels()">✖</button></h3>
+                
+                <div style="background: rgba(255,0,127,0.06); border: 1.5px solid #ff007f; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+                    <div style="font-size: 11px; font-weight: 900; color: #ff007f; margin-bottom: 6px;">🌐 Your Referral Link</div>
+                    <input type="text" id="affiliateLinkBox" placeholder="Generate link from ID verification" readonly style="width:100%; padding:8px; background:#02122c; border:1px solid #ff007f; color:#fff; font-size:10px; border-radius:6px; margin-bottom:8px;">
+                    <div style="display: flex; gap: 6px;">
+                        <button class="action-btn" style="margin-top:0; background:linear-gradient(135deg,#00e5ff,#0066ff); color:#000; font-size:10px; padding:6px;" onclick="copyAffiliateLink()">📋 Copy Link</button>
+                        <button class="action-btn" style="margin-top:0; background:linear-gradient(135deg,#25D366,#128C7E); color:#fff; font-size:10px; padding:6px;" onclick="shareOnWhatsApp()">💬 WhatsApp</button>
+                    </div>
+                </div>
+
+                <div style="background: rgba(255,170,0,0.06); border: 1.5px solid #ffaa00; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span style="font-size: 11px; font-weight: 900; color: #ffaa00;">🛡️ Daily Active Status (0/4 Ads)</span>
+                        <span id="dailyStatusBadge" style="font-size: 9px; font-weight: bold; padding: 2px 6px; border-radius: 4px; background: #ff0055; color: #fff;">Inactive 🔴</span>
+                    </div>
+                    <div style="width: 100%; height: 10px; background: #061122; border-radius: 5px; overflow: hidden; border: 1px solid #444; margin-bottom: 8px;">
+                        <div id="dailyActiveBarFill" style="width: 0%; height: 100%; background: #ff0055; transition: width 0.3s;"></div>
+                    </div>
+                    <button class="action-btn" style="margin-top:0; background:linear-gradient(135deg,#ffaa00,#ff007f); color:#fff; font-size:10px; padding:6px;" onclick="triggerSecureAdWatch('affiliate_active')">📺 Watch Full Daily Ad (+1)</button>
+                </div>
+
+                <div style="background: rgba(0,255,102,0.06); border: 1.5px solid #00ff66; border-radius: 12px; padding: 12px; margin-bottom: 12px; text-align: center;">
+                    <div style="font-size: 10px; font-weight: 800; color: #00ff66;">💰 Lifetime Passive Ad-Commission (2%)</div>
+                    <div style="font-size: 18px; font-weight: 900; color: #fff; margin: 4px 0;" id="passiveCommissionBalance">0.00 MGSML</div>
+                    <button class="claim-sm-btn" onclick="claimPassiveCommission()" style="background: linear-gradient(135deg, #00ff66, #009933); color: #000;">Claim Commission</button>
+                </div>
+
+                <div style="font-size: 11px; font-weight: 900; color: #00e5ff; margin-bottom: 8px;">📋 10-Tier Referral Roadmaps (Admin Controlled)</div>
+                <div style="display: flex; flex-direction: column; gap: 8px;" id="affiliateTiersContainer"></div>
+            </div>
+
+            <!-- 9. MODULAR ADMIN CONTROL PANEL -->
+            <div class="panel-section" id="panelAdmin">
+                <h3 style="color:#ffaa00;">🛡️ Modular Admin Control <button class="close-panel-btn" onclick="closePanels()">✖</button></h3>
+                
+                <div class="input-group">
+                    <label>🔗 GitHub Admin Page Link</label>
+                    <input type="text" id="adminGithubLink" placeholder="https://yourusername.github.io/admin-page">
+                </div>
+                <button class="action-btn" style="background:linear-gradient(135deg,#00e5ff,#0066ff); margin-bottom:15px;" onclick="saveGithubLink()">Save & Open External Admin</button>
+
+                <button class="action-btn" style="background:linear-gradient(135deg,#00ff66,#009933); color:#000; margin-bottom:20px;" onclick="openExternalAdminPanel()">🚀 Open Secret Admin Panel</button>
+
+                <div style="border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 12px; margin-bottom: 15px;">
+                    <div style="font-size: 11px; font-weight: bold; color: #ffaa00; margin-bottom: 8px;">⚙️ Admin 10-Tier Affiliate Rewards Control</div>
+                    <div id="adminAffiliateConfigContainer" style="display: flex; flex-direction: column; gap: 6px; max-height: 150px; overflow-y: auto; margin-bottom: 8px;"></div>
+                </div>
+
+                <div style="border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 12px;">
+                    <div class="input-group">
+                        <label>🔒 Change Admin Security Password (A-Z, 0-9, @, #, .)</label>
+                        <input type="password" id="currentPinInput" placeholder="Current Secret PIN" style="margin-bottom:6px;">
+                        <input type="password" id="newPinInput" placeholder="Enter New 12+ Character PIN">
+                    </div>
+                    <button class="action-btn" style="background:linear-gradient(135deg,#ffaa00,#ff007f); color:#fff;" onclick="changeAdminPin()">Update Admin PIN</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Home YouTube-Style Channel Profile Card -->
+        <div class="home-channel-card" id="homeChannelCard">
+            <div class="main-channel-avatar" id="mainAvatarDisplay">👤</div>
+            <div class="main-channel-title" id="mainChannelName">Guest Creator</div>
+            <div class="main-channel-handle" id="mainChannelId">ID: Unverified</div>
+            <div class="main-channel-bio" id="mainChannelBio">Welcome to Social Club! Create your channel and upload videos to earn rewards.</div>
+        </div>
+
+        <!-- Bottom Live Price Ticker Bar -->
+        <div class="live-price-ticker">
+            <div class="ticker-track" id="liveTickerTrack"></div>
+        </div>
+
+        <!-- Fixed Bottom Navigation Bar -->
+        <div class="bottom-nav-bar">
+            <button class="nav-btn" onclick="switchTab('Verify')"><span>🔐</span>Verify</button>
+            <button class="nav-btn" onclick="switchTab('Channel')"><span>📺</span>Channel</button>
+            <button class="nav-btn" onclick="switchTab('Wallet')"><span>💰</span>Wallet</button>
+            <button class="nav-btn" onclick="switchTab('Status')"><span>📊</span>Status</button>
+            <button class="nav-btn" onclick="switchTab('Monetize')"><span>🌟</span>Monetize</button>
+        </div>
+
+        <!-- Mini Compact Pure Black Modal Box -->
+        <div class="secret-modal-overlay" id="secretModalOverlay" onclick="closeSecretModalOnBackground(event)">
+            <div class="secret-modal-box">
+                <input type="password" id="secretPinInput" class="secret-pin-input" autofocus oninput="checkSecretPin()">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tokenList = [
+            {id: "MGSML", name: "MGSML", price: 1.00, isMaster: true, group: "Master Token"},
+            {id: "MG", name: "MG", price: 0.00, group: "Project Tokens"},
+            {id: "SCS", name: "SCS", price: 0.00, group: "Project Tokens"},
+            {id: "MLF", name: "MLF", price: 0.00, group: "Project Tokens"},
+            {id: "MTR", name: "MTR", price: 0.00, group: "Project Tokens"},
+            {id: "BULT", name: "BULT", price: 0.00, group: "Project Tokens"},
+            {id: "JKR", name: "JKR", price: 0.00, group: "Project Tokens"},
+            {id: "BLH", name: "BLH", price: 0.00, group: "Trending Tokens"},
+            {id: "BRH", name: "BRH", price: 0.00, group: "Trending Tokens"},
+            {id: "HRM", name: "HRM", price: 0.00, group: "Trending Tokens"},
+            {id: "DOJI", name: "DOJI", price: 0.00, group: "Trending Tokens"},
+            {id: "SGP", name: "SGP", price: 0.00, group: "Trending Tokens"},
+            {id: "MRB", name: "MRB", price: 0.00, group: "Trending Tokens"},
+            {id: "ULG", name: "ULG", price: 0.00, group: "Trending Tokens"},
+            {id: "BWD", name: "BWD", price: 0.00, group: "Gaming Tokens"},
+            {id: "SKY", name: "SKY", price: 0.00, group: "Gaming Tokens"},
+            {id: "RKT", name: "RKT", price: 0.00, group: "Gaming Tokens"},
+            {id: "GME", name: "GME", price: 0.00, group: "Gaming Tokens"},
+            {id: "SSR", name: "SSR", price: 0.00, group: "Gaming Tokens"},
+            {id: "TPY", name: "TPY", price: 0.00, group: "Gaming Tokens"}
+        ];
+
+        const monetizeTiers = [
+            { id: "tier1", name: "1. Starter Tier 🥉", req: "1K Views, 50 Subs, 10 Hrs", defaultReward: 10 },
+            { id: "tier2", name: "2. Bronze Tier 🥈", req: "5K Views, 100 Subs, 50 Hrs", defaultReward: 50 },
+            { id: "tier3", name: "3. Silver Tier 🥇", req: "15K Views, 250 Subs, 150 Hrs", defaultReward: 150 },
+            { id: "tier4", name: "4. Gold Tier ⭐", req: "30K Views, 500 Subs, 300 Hrs", defaultReward: 350 },
+            { id: "tier5", name: "5. Platinum Tier 🌟", req: "60K Views, 1K Subs, 600 Hrs", defaultReward: 800 },
+            { id: "tier6", name: "6. Diamond Tier 💎", req: "120K Views, 2.5K Subs, 1.2K Hrs", defaultReward: 1800 },
+            { id: "tier7", name: "7. Master Tier 👑", req: "250K Views, 5K Subs, 2.5K Hrs", defaultReward: 4000 },
+            { id: "tier8", name: "8. Grandmaster Tier 👑🔥", req: "500K Views, 10K Subs, 5K Hrs", defaultReward: 9000 },
+            { id: "tier9", name: "9. Elite Creator 🚀", req: "1M Views, 25K Subs, 10K Hrs", defaultReward: 20000 },
+            { id: "tier10", name: "10. Royal Legend 👑⚡", req: "2.5M Views, 50K Subs, 25K Hrs", defaultReward: 50000 }
+        ];
+
+        const affiliateTiers = [
+            { id: "aff1", level: "Level 1", reqRefers: 5, defaultReward: 25 },
+            { id: "aff2", level: "Level 2", reqRefers: 15, defaultReward: 75 },
+            { id: "aff3", level: "Level 3", reqRefers: 35, defaultReward: 180 },
+            { id: "aff4", level: "Level 4", reqRefers: 70, defaultReward: 350 },
+            { id: "aff5", level: "Level 5", reqRefers: 120, defaultReward: 700 },
+            { id: "aff6", level: "Level 6", reqRefers: 200, defaultReward: 1300 },
+            { id: "aff7", level: "Level 7", reqRefers: 350, defaultReward: 2500 },
+            { id: "aff8", level: "Level 8", reqRefers: 600, defaultReward: 5000 },
+            { id: "aff9", level: "Level 9", reqRefers: 1000, defaultReward: 10000 },
+            { id: "aff10", level: "Level 10", reqRefers: 2000, defaultReward: 25000 }
+        ];
+
+        const masterTasks = [
+            { id: "t1", title: "Daily Login Check-in", reward: 5 },
+            { id: "t2", title: "Daily Lucky Spin", reward: 10 },
+            { id: "t3", title: "Watch 3 Short Reels", reward: 8 },
+            { id: "t4", title: "Claim Short Video Tips", reward: 15 },
+            { id: "t5", title: "Like Creator Channel", reward: 3 },
+            { id: "t6", title: "Upload New Video", reward: 20 },
+            { id: "t7", title: "Share App on Socials", reward: 12 },
+            { id: "t8", title: "Invite Friends (Referral)", reward: 25 },
+            { id: "t9", title: "Daily Crypto Tech Quiz", reward: 10 },
+            { id: "t10", title: "Watch Long Movie / Video", reward: 15 },
+            { id: "t11", title: "Hold Tokens in Wallet", reward: 30 },
+            { id: "t12", title: "Submit Platform Feedback", reward: 10 },
+            { id: "t13", title: "Active Community Chat", reward: 5 },
+            { id: "t14", title: "Reach Milestone Tier", reward: 50 },
+            { id: "t15", title: "Watch Ad for Video Reach", reward: 10 }
+        ];
+
+        window.onload = function() {
+            populateTokenDropdowns();
+            renderMonetizeCards();
+            renderTasksList();
+            renderAffiliateCards();
+            renderAdminAffiliateConfig();
+            initLiveTicker();
+            loadSavedData();
+            setInterval(updateTickerPrices, 4000);
+        };
+
+        function populateTokenDropdowns() {
+            const walletDropdown = document.getElementById('walletTokenDropdown');
+            const swapFromDropdown = document.getElementById('swapFromTokenDropdown');
+            const swapToDropdown = document.getElementById('swapToTokenDropdown');
+            
+            if(walletDropdown) walletDropdown.innerHTML = '';
+            if(swapFromDropdown) swapFromDropdown.innerHTML = '';
+            if(swapToDropdown) swapToDropdown.innerHTML = '';
+
+            let groups = {};
+            tokenList.forEach(t => {
+                if(!groups[t.group]) groups[t.group] = [];
+                groups[t.group].push(t);
+            });
+
+            for(let gName in groups) {
+                let optgroup1 = document.createElement('optgroup');
+                optgroup1.label = gName;
+                let optgroup2 = document.createElement('optgroup');
+                optgroup2.label = gName;
+                let optgroup3 = document.createElement('optgroup');
+                optgroup3.label = gName;
+
+                groups[gName].forEach(t => {
+                    let opt1 = document.createElement('option');
+                    opt1.value = t.id;
+                    let bal = localStorage.getItem('token_bal_' + t.id) || '0';
+                    opt1.text = `${t.name} -> Earned: ${bal}`;
+                    optgroup1.appendChild(opt1);
+
+                    let opt2 = document.createElement('option');
+                    opt2.value = t.id;
+                    opt2.text = `${t.name}`;
+                    optgroup2.appendChild(opt2);
+
+                    let opt3 = document.createElement('option');
+                    opt3.value = t.id;
+                    opt3.text = `${t.name}`;
+                    optgroup3.appendChild(opt3);
+                });
+
+                if(walletDropdown) walletDropdown.appendChild(optgroup1);
+                if(swapFromDropdown) swapFromDropdown.appendChild(optgroup2);
+                if(swapToDropdown) swapToDropdown.appendChild(optgroup3);
+            }
+        }
+
+        function renderMonetizeCards() {
+            const container = document.getElementById('monetizeCardsContainer');
+            if(!container) return;
+            container.innerHTML = '';
+
+            monetizeTiers.forEach((tier, idx) => {
+                let isClaimed = localStorage.getItem('monetize_claimed_' + tier.id) === 'true';
+                let currentReward = localStorage.getItem('admin_reward_' + tier.id) || tier.defaultReward;
+                let isUnlocked = idx === 0 || localStorage.getItem('monetize_unlocked_' + tier.id) === 'true';
+                
+                let card = document.createElement('div');
+                card.className = 'monetize-card-item';
+                card.innerHTML = `
+                    <div class="monetize-card-header">
+                        <span>${tier.name}</span>
+                        <span style="color: #ffaa00;">+${currentReward} Units</span>
+                    </div>
+                    <div class="monetize-card-desc">Requirement: ${tier.req}</div>
+                    <button class="monetize-claim-btn ${isClaimed ? 'claimed' : (isUnlocked ? 'unlocked' : '')}" id="btnTier_${tier.id}" onclick="claimMonetizeTier('${tier.id}', ${isUnlocked})" ${isClaimed || !isUnlocked ? 'disabled' : ''}>
+                        ${isClaimed ? 'Claimed 👑' : (isUnlocked ? 'Claim Reward 🎁' : 'Locked 🔒 (Criteria Incomplete)')}
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function claimMonetizeTier(tierId, isUnlocked) {
+            if(!isUnlocked) return alert("Milestone criteria not met yet!");
+            if(localStorage.getItem('monetize_claimed_' + tierId) === 'true') return alert("Already Claimed!");
+
+            let rewardAmt = parseFloat(localStorage.getItem('admin_reward_' + tierId) || '10');
+            const activeToken = localStorage.getItem('selected_wallet_token') || 'MG';
+            let currentBal = parseFloat(localStorage.getItem('token_bal_' + activeToken) || '0');
+            currentBal += rewardAmt;
+
+            localStorage.setItem('token_bal_' + activeToken, currentBal);
+            localStorage.setItem('monetize_claimed_' + tierId, 'true');
+
+            populateTokenDropdowns();
+            updateWalletDisplay();
+            renderMonetizeCards();
+            alert(`Monetize Reward Claimed Successfully!\n+${rewardAmt} ${activeToken} added to your wallet.`);
+        }
+
+        function renderTasksList() {
+            const container = document.getElementById('tasksListContainer');
+            if(!container) return;
+            container.innerHTML = '';
+
+            masterTasks.forEach((task, index) => {
+                let isDone = localStorage.getItem('task_done_' + task.id) === 'true';
+                let taskDiv = document.createElement('div');
+                taskDiv.className = 'task-item-box';
+                taskDiv.innerHTML = `
+                    <div>
+                        <div style="font-size: 11px; font-weight: 800; color: #fff;">${index + 1}. ${task.title}</div>
+                        <div style="font-size: 9px; color: #00ff66;">Reward: +${task.reward} MGSML</div>
+                    </div>
+                    <button class="claim-sm-btn ${isDone ? 'claimed' : ''}" id="btnTaskItem_${task.id}" onclick="completeMasterTask('${task.id}', ${task.reward})" style="width: 75px;" ${isDone ? 'disabled' : ''}>
+                        ${isDone ? 'Done' : 'Complete'}
+                    </button>
+                `;
+                container.appendChild(taskDiv);
+            });
+        }
+
+        function completeMasterTask(taskId, reward) {
+            if(localStorage.getItem('task_done_' + taskId) === 'true') return alert("Task already completed!");
+
+            const activeToken = localStorage.getItem('selected_wallet_token') || 'MG';
+            let currentBal = parseFloat(localStorage.getItem('token_bal_' + activeToken) || '0');
+            currentBal += reward;
+
+            localStorage.setItem('token_bal_' + activeToken, currentBal);
+            localStorage.setItem('task_done_' + taskId, 'true');
+
+            populateTokenDropdowns();
+            updateWalletDisplay();
+            renderTasksList();
+            alert(`Task Completed Successfully!\n+${reward} ${activeToken} added to your wallet.`);
+        }
+
+        function renderAffiliateCards() {
+            const container = document.getElementById('affiliateTiersContainer');
+            if(!container) return;
+            container.innerHTML = '';
+
+            affiliateTiers.forEach((aff, idx) => {
+                let isClaimed = localStorage.getItem('aff_claimed_' + aff.id) === 'true';
+                let rewardAmt = localStorage.getItem('admin_aff_reward_' + aff.id) || aff.defaultReward;
+                let isUnlocked = idx === 0 || localStorage.getItem('aff_unlocked_' + aff.id) === 'true';
+                
+                let card = document.createElement('div');
+                card.className = 'affiliate-card-item';
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:900; color:#ff007f;">
+                        <span>${aff.level} (Req: ${aff.reqRefers} Refers)</span>
+                        <span style="color:#00ff66;">+${rewardAmt} MGSML</span>
+                    </div>
+                    <button class="claim-sm-btn ${isClaimed ? 'claimed' : (isUnlocked ? 'unlocked' : '')}" onclick="claimAffiliateTier('${aff.id}', ${rewardAmt}, ${isUnlocked})" ${isClaimed || !isUnlocked ? 'disabled' : ''}>
+                        ${isClaimed ? 'Claimed 👑' : (isUnlocked ? 'Claim Tier Reward 🎁' : 'Locked 🔒')}
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderAdminAffiliateConfig() {
+            const container = document.getElementById('adminAffiliateConfigContainer');
+            if(!container) return;
+            container.innerHTML = '';
+
+            affiliateTiers.forEach(aff => {
+                let currentVal = localStorage.getItem('admin_aff_reward_' + aff.id) || aff.defaultReward;
+                let div = document.createElement('div');
+                div.style.display = "flex";
+                div.style.justifyContent = "space-between";
+                div.style.alignItems = "center";
+                div.style.fontSize = "10px";
+                div.innerHTML = `
+                    <span>${aff.level} Reward:</span>
+                    <input type="number" id="adminAffInput_${aff.id}" value="${currentVal}" onchange="updateAdminAffReward('${aff.id}')" style="width:65px; background:#02122c; border:1px solid #ff007f; color:#ff007f; text-align:center; border-radius:4px; font-weight:bold; padding:2px;">
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateAdminAffReward(affId) {
+            let val = document.getElementById('adminAffInput_' + affId).value;
+            localStorage.setItem('admin_aff_reward_' + affId, val);
+            renderAffiliateCards();
+            alert("Affiliate reward updated successfully!");
+        }
+
+        function claimAffiliateTier(affId, rewardAmt, isUnlocked) {
+            if(!isUnlocked) return alert("Referral target not achieved yet!");
+            if(localStorage.getItem('aff_claimed_' + affId) === 'true') return alert("Already Claimed!");
+
+            const activeToken = localStorage.getItem('selected_wallet_token') || 'MG';
+            let currentBal = parseFloat(localStorage.getItem('token_bal_' + activeToken) || '0');
+            currentBal += parseFloat(rewardAmt);
+
+            localStorage.setItem('token_bal_' + activeToken, currentBal);
+            localStorage.setItem('aff_claimed_' + affId, 'true');
+
+            populateTokenDropdowns();
+            updateWalletDisplay();
+            renderAffiliateCards();
+            alert(`Affiliate Reward Claimed Successfully!\n+${rewardAmt} ${activeToken} added to your wallet.`);
+        }
+
+        function triggerSecureAdWatch(adType) {
+            let confirmed = confirm("🎬 Ad Started!\n\n[Anti-Cheat]: Please watch the complete ad without closing to receive credit.");
+            if (!confirmed) {
+                alert("❌ Ad cancelled. No credit given.");
+                return;
+            }
+
+            if (adType === 'video_boost') {
+                let videoLink = document.getElementById('boostVideoLinkInput').value.trim();
+                if(!videoLink) return alert("Please paste your Social Club video link first!");
+                if(videoLink.includes("youtube.com") || videoLink.includes("youtu.be")) {
+                    return alert("YouTube links are not allowed here! Use Social Club video links only.");
+                }
+
+                let watched = parseInt(localStorage.getItem('sc_watched_ads') || '0') + 1;
+                let reach = watched * 5;
+
+                localStorage.setItem('sc_watched_ads', watched);
+                localStorage.setItem('sc_video_reach', reach);
+
+                document.getElementById('watchedAdsCount').innerText = watched;
+                document.getElementById('videoReachCount').innerText = reach;
+                document.getElementById('boostVideoLinkInput').value = '';
+
+                alert(`🎉 Full Ad Completed!\nYour Social Club video reach has been boosted to ${reach} users!`);
+            } 
+            else if (adType === 'affiliate_active') {
+                let watched = parseInt(localStorage.getItem('aff_daily_ads_watched') || '0');
+                if(watched >= 4) return alert("Daily active ad requirement already completed (4/4)!");
+
+                watched += 1;
+                localStorage.setItem('aff_daily_ads_watched', watched);
+                updateDailyActiveBar();
+                alert(`🎉 Full Daily Ad Verified (${watched}/4)!`);
+            }
+        }
+
+        function updateDailyActiveBar() {
+            let watched = parseInt(localStorage.getItem('aff_daily_ads_watched') || '0');
+            let percentage = (watched / 4) * 100;
+            if(percentage > 100) percentage = 100;
+
+            const barFill = document.getElementById('dailyActiveBarFill');
+            const badge = document.getElementById('dailyStatusBadge');
+            
+            if(barFill) barFill.style.width = percentage + '%';
+
+            if(watched >= 4) {
+                if(barFill) barFill.style.background = '#00ff66';
+                if(badge) {
+                    badge.innerText = "Active 🟢";
+                    badge.style.background = "#00ff66";
+                    badge.style.color = "#000";
+                }
+            } else {
+                if(barFill) barFill.style.background = '#ff0055';
+                if(badge) {
+                    badge.innerText = "Inactive 🔴";
+                    badge.style.background = "#ff0055";
+                    badge.style.color = "#fff";
+                }
+            }
+        }
+
+        function claimPassiveCommission() {
+            let watched = parseInt(localStorage.getItem('aff_daily_ads_watched') || '0');
+            if(watched < 4) {
+                return alert("Active Status Required! Watch at least 4 daily ads to unlock and claim commission.");
+            }
+
+            let passiveBal = parseFloat(localStorage.getItem('passive_commission_bal') || '18.50');
+            if(passiveBal <= 0) return alert("No passive commission available!");
+
+            const activeToken = localStorage.getItem('selected_wallet_token') || 'MG';
+            let currentBal = parseFloat(localStorage.getItem('token_bal_' + activeToken) || '0');
+            currentBal += passiveBal;
+
+            localStorage.setItem('token_bal_' + activeToken, currentBal);
+            localStorage.setItem('passive_commission_bal', '0.00');
+            document.getElementById('passiveCommissionBalance').innerText = "0.00 MGSML";
+
+            populateTokenDropdowns();
+            updateWalletDisplay();
+            alert(`Successfully claimed +${passiveBal} Passive Commission!`);
+        }
+
+        function spinLuckyWheel() {
+            let reward = Math.floor(Math.random() * 20) + 5;
+            const activeToken = localStorage.getItem('selected_wallet_token') || 'MG';
+            let currentBal = parseFloat(localStorage.getItem('token_bal_' + activeToken) || '0');
+            currentBal += reward;
+
+            localStorage.setItem('token_bal_' + activeToken, currentBal);
+            populateTokenDropdowns();
+            updateWalletDisplay();
+            alert(`🎉 Congratulations! Lucky Spin Won +${reward} ${activeToken}!`);
+        }
+
+        function claimShortVideoTips() {
+            let tipsBal = parseFloat(localStorage.getItem('short_video_tips_bal') || '25.00');
+            if(tipsBal <= 0) return alert("No tips available to claim!");
+
+            const activeToken = localStorage.getItem('selected_wallet_token') || 'MG';
+            let currentBal = parseFloat(localStorage.getItem('token_bal_' + activeToken) || '0');
+            currentBal += tipsBal;
+
+            localStorage.setItem('token_bal_' + activeToken, currentBal);
+            localStorage.setItem('short_video_tips_bal', '0.00');
+            document.getElementById('shortVideoTipsBalance').innerText = "0.00 MGSML";
+
+            populateTokenDropdowns();
+            updateWalletDisplay();
+            alert(`Successfully claimed +${tipsBal} Short Video Tips!`);
+        }
+
+        function likeChannel() {
+            let currentLikes = parseInt(localStorage.getItem('channel_likes_count') || '1400');
+            currentLikes += 1;
+            localStorage.setItem('channel_likes_count', currentLikes);
+            document.getElementById('statusLikeCount').innerText = (currentLikes / 1000).toFixed(1) + "K";
+            alert("Thank you for liking this Channel!");
+        }
+
+        function initLiveTicker() {
+            const track = document.getElementById('liveTickerTrack');
+            if(!track) return;
+            track.innerHTML = '';
+
+            let doubleList = [...tokenList, ...tokenList];
+            doubleList.forEach(t => {
+                let dispPrice = t.isMaster ? (parseFloat(localStorage.getItem('token_price_MGSML') || '1.00')) : (parseFloat(localStorage.getItem('token_price_' + t.id) || '0.00'));
+                let itemDiv = document.createElement('div');
+                itemDiv.className = 'ticker-item';
+                itemDiv.innerHTML = `<span>${t.name}:</span> <span class="ticker-price">$${dispPrice.toFixed(2)}</span> <span class="ticker-up">▲</span>`;
+                track.appendChild(itemDiv);
+            });
+        }
+
+        function updateTickerPrices() {
+            tokenList.forEach(t => {
+                let currentPrice = parseFloat(localStorage.getItem('token_price_' + t.id) || t.price);
+                let changePercent = 0;
+
+                if(t.isMaster) {
+                    changePercent = (Math.random() * 2 - 0.98) / 100;
+                    currentPrice = currentPrice * (1 + changePercent);
+                    if(currentPrice < 0.50) currentPrice = 1.00;
+                    localStorage.setItem('token_price_' + t.id, currentPrice.toFixed(4));
+                } else {
+                    currentPrice = parseFloat(localStorage.getItem('token_price_' + t.id) || '0.00');
+                }
+
+                document.querySelectorAll('.ticker-item').forEach(el => {
+                    if(el.innerHTML.includes(t.name + ':')) {
+                        let priceSpan = el.querySelector('.ticker-price');
+                        let arrowSpan = el.querySelector('.ticker-up, .ticker-down');
+                        if(priceSpan) priceSpan.innerText = '$' + currentPrice.toFixed(2);
+                        if(arrowSpan && t.isMaster) {
+                            if(changePercent >= 0) {
+                                arrowSpan.className = 'ticker-up';
+                                arrowSpan.innerText = '▲';
+                            } else {
+                                arrowSpan.className = 'ticker-down';
+                                arrowSpan.innerText = '▼';
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        function toggleDrawer() {
+            document.getElementById('sideDrawer').classList.toggle('open');
+        }
+
+        function loadSavedData() {
+            const savedId = localStorage.getItem('mgsml_verified_id') || 'GUEST12345';
+            const savedChannel = localStorage.getItem('channel_name');
+            const savedBio = localStorage.getItem('channel_bio');
+            const savedLogo = localStorage.getItem('channel_logo');
+            const savedGithub = localStorage.getItem('admin_github_url') || '';
+            const selectedToken = localStorage.getItem('selected_wallet_token') || 'MG';
+            const savedWalletAddr = localStorage.getItem('mgsml_scs_wallet_address') || '';
+
+            let affLink = `https://mgsml-sky.github.io/ref?id=${savedId}`;
+            if(document.getElementById('affiliateLinkBox')) {
+                document.getElementById('affiliateLinkBox').value = affLink;
+            }
+
+            updateDailyActiveBar();
+
+            let watched = localStorage.getItem('sc_watched_ads') || '0';
+            let reach = localStorage.getItem('sc_video_reach') || '0';
+            if(document.getElementById('watchedAdsCount')) document.getElementById('watchedAdsCount').innerText = watched;
+            if(document.getElementById('videoReachCount')) document.getElementById('videoReachCount').innerText = reach;
+
+            if(document.getElementById('walletTokenDropdown')) {
+                document.getElementById('walletTokenDropdown').value = selectedToken;
+            }
+            if(savedWalletAddr && document.getElementById('digitalWalletAddressBox')) {
+                document.getElementById('digitalWalletAddressBox').value = savedWalletAddr;
+            }
+            updateWalletDisplay();
+
+            if(savedGithub) {
+                document.getElementById('adminGithubLink').value = savedGithub;
+            }
+
+            if(savedId && savedId !== 'GUEST12345') {
+                document.getElementById('topUserId').innerText = "ID: " + savedId;
+                document.getElementById('mainChannelId').innerText = "ID: " + savedId;
+            }
+
+            if(savedChannel) {
+                document.getElementById('topUserName').innerText = savedChannel;
+                document.getElementById('mainChannelName').innerText = savedChannel;
+            }
+
+            if(savedBio) {
+                document.getElementById('mainChannelBio').innerText = savedBio;
+            }
+
+            if(savedLogo) {
+                const imgHtml = `<img src="${savedLogo}" alt="Logo">`;
+                document.getElementById('avatarDisplay').innerHTML = imgHtml;
+                document.getElementById('mainAvatarDisplay').innerHTML = imgHtml;
+            }
+
+            updateRewardBoxLabels();
+        }
+
+        function updateWalletDisplay() {
+            const dropdown = document.getElementById('walletTokenDropdown');
+            if(!dropdown) return;
+            const tokenSymbol = dropdown.value;
+            
+            localStorage.setItem('selected_wallet_token', tokenSymbol);
+
+            let balance = localStorage.getItem('token_bal_' + tokenSymbol) || '0';
+            document.getElementById('walletBalanceDisplay').innerText = balance;
+            document.getElementById('walletActiveTokenLabel').innerText = "AVAILABLE BALANCE (" + tokenSymbol + ")";
+
+            updateRewardBoxLabels();
+        }
+
+        function updateRewardBoxLabels() {
+            const activeToken = localStorage.getItem('selected_wallet_token') || 'MG';
+            if(document.getElementById('boxVal_movie')) {
+                document.getElementById('boxVal_movie').innerText = "+8 " + activeToken;
+                document.getElementById('boxVal_like').innerText = "+5 " + activeToken;
+                document.getElementById('boxVal_comment').innerText = "+3 " + activeToken;
+                document.getElementById('boxVal_share').innerText = "+4 " + activeToken;
+                document.getElementById('boxVal_upload').innerText = "+10 " + activeToken;
+            }
+        }
+
+        function createSocialClubWallet() {
+            const userId = localStorage.getItem('mgsml_verified_id') || 'GUEST' + Math.floor(Math.random() * 90000 + 10000);
+            const randomHash = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const uniqueWalletAddr = `MGSML-SCS-${randomHash}-${userId}`;
+            
+            localStorage.setItem('mgsml_scs_wallet_address', uniqueWalletAddr);
+            document.getElementById('digitalWalletAddressBox').value = uniqueWalletAddr;
+            alert("Social Club Unique Wallet Created Successfully!");
+        }
+
+        function copyTextToClipboard(text, successMsg) {
+            if (!text) return alert("Nothing to copy!");
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert(successMsg + "\n" + text);
+                }).catch(() => {
+                    fallbackCopyText(text, successMsg);
+                });
+            } else {
+                fallbackCopyText(text, successMsg);
+            }
+        }
+
+        function fallbackCopyText(text, successMsg) {
+            let textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                alert(successMsg + "\n" + text);
+            } catch (err) {
+                alert("Failed to copy! Please copy manually.");
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function copyWalletAddress() {
+            const addrBox = document.getElementById('digitalWalletAddressBox');
+            if(!addrBox.value) return alert("No wallet address found!");
+            copyTextToClipboard(addrBox.value, "Wallet Address Copied Successfully:");
+        }
+
+        function copyAffiliateLink() {
+            const linkBox = document.getElementById('affiliateLinkBox');
+            if(!linkBox.value) return alert("No affiliate link found!");
+            copyTextToClipboard(linkBox.value, "Affiliate Link Copied Successfully:");
+        }
+
+        function shareOnWhatsApp() {
+            const linkBox = document.getElementById('affiliateLinkBox');
+            if(!linkBox.value) return alert("No affiliate link found!");
+            let whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent("Join Social Club and earn crypto rewards! Use my exclusive link: " + linkBox.value)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function executeTwoWaySwap() {
+            const fromToken = document.getElementById('swapFromTokenDropdown').value;
+            const toToken = document.getElementById('swapToTokenDropdown').value;
+            const amt = parseFloat(document.getElementById('swapAmountInput').value);
+
+            if(fromToken === toToken) return alert("Cannot swap the same token!");
+            if(!amt || amt <= 0) return alert("Please enter a valid swap amount!");
+
+            let fromBal = parseFloat(localStorage.getItem('token_bal_' + fromToken) || '0');
+            if(amt > fromBal) return alert("Insufficient " + fromToken + " balance!");
+
+            let fee = amt * 0.02;
+            let netAmt = amt - fee;
+
+            fromBal -= amt;
+            localStorage.setItem('token_bal_' + fromToken, fromBal);
+
+            let toBal = parseFloat(localStorage.getItem('token_bal_' + toToken) || '0');
+            toBal += netAmt;
+            localStorage.setItem('token_bal_' + toToken, toBal);
+
+            document.getElementById('swapAmountInput').value = '';
+            populateTokenDropdowns();
+            updateWalletDisplay();
+            alert(`DEX Swap Successful!\nSwapped: ${amt} ${fromToken}\nFee (2%): ${fee.toFixed(2)}\nReceived: +${netAmt.toFixed(2)} ${toToken}`);
+        }
+
+        function transferToMiniExchangeSecure() {
+            const address = document.getElementById('miniExchangeAddressInput').value.trim();
+            const amt = parseFloat(document.getElementById('transferAmountInput').value);
+            const enteredMpin = document.getElementById('transferMpinInput').value.trim();
+            const correctMpin = localStorage.getItem('admin_m_pin') || '1234';
+
+            if(!address) return alert("Please enter the Mini Exchange destination address!");
+            if(!amt || amt <= 0) return alert("Please enter a valid transfer amount!");
+            if(!enteredMpin) return alert("Please enter your Security Password!");
+            if(enteredMpin !== correctMpin) return alert("Incorrect Security Password! Transfer aborted.");
+
+            let mgsmlBal = parseFloat(localStorage.getItem('token_bal_MGSML') || '0');
+            if(amt > mgsmlBal) return alert("Insufficient MGSML balance for transfer!");
+
+            mgsmlBal -= amt;
+            localStorage.setItem('token_bal_MGSML', mgsmlBal);
+
+            document.getElementById('miniExchangeAddressInput').value = '';
+            document.getElementById('transferAmountInput').value = '';
+            document.getElementById('transferMpinInput').value = '';
+
+            document.getElementById('walletTokenDropdown').value = 'MGSML';
+            populateTokenDropdowns();
+            updateWalletDisplay();
+
+            alert(`Secure Transfer Successful!\nSent ${amt} MGSML to:\n${address}`);
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function redirectToSignup() {
+            window.location.href = "https://mgsml-sky.github.io/signup"; 
+        }
+
+        function closePanels() {
+            document.querySelectorAll('.panel-section').forEach(p => p.classList.remove('active'));
+            document.getElementById('homeChannelCard').classList.remove('hidden');
+        }
+
+        function switchTab(tabName) {
+            closePanels();
+            const panel = document.getElementById('panel' + tabName);
+            if(panel) {
+                panel.classList.add('active');
+                document.getElementById('homeChannelCard').classList.add('hidden');
+            }
+
+            if(tabName === 'Edit') {
+                document.getElementById('editNameInput').value = localStorage.getItem('channel_name') || '';
+                document.getElementById('editBioInput').value = localStorage.getItem('channel_bio') || '';
+            }
+        }
+
+        function openSecretModal() {
+            const overlay = document.getElementById('secretModalOverlay');
+            overlay.classList.add('active');
+            const input = document.getElementById('secretPinInput');
+            input.value = '';
+            setTimeout(() => { input.focus(); }, 100);
+        }
+
+        function closeSecretModal() {
+            document.getElementById('secretModalOverlay').classList.remove('active');
+        }
+
+        function closeSecretModalOnBackground(e) {
+            if (e.target.id === 'secretModalOverlay') {
+                closeSecretModal();
+            }
+        }
+
+        function checkSecretPin() {
+            const val = document.getElementById('secretPinInput').value;
+            const currentAdminPin = localStorage.getItem('admin_m_pin') || '1234';
+            
+            if(val === currentAdminPin) {
+                closeSecretModal();
+                switchTab('Admin');
+                alert("Secret Admin Panel Unlocked!");
+            }
+        }
+
+        function saveGithubLink() {
+            const link = document.getElementById('adminGithubLink').value.trim();
+            if(!link) return alert("Please enter a valid GitHub link!");
+            localStorage.setItem('admin_github_url', link);
+            alert("GitHub Admin Link Saved Successfully!");
+        }
+
+        function openExternalAdminPanel() {
+            const link = localStorage.getItem('admin_github_url');
+            if(!link) {
+                alert("Please enter and save your GitHub Admin Link first!");
+                return;
+            }
+            window.open(link, '_blank');
+        }
+
+        function changeAdminPin() {
+            const currentInput = document.getElementById('currentPinInput').value.trim();
+            const newInput = document.getElementById('newPinInput').value.trim();
+            const storedPin = localStorage.getItem('admin_m_pin') || '1234';
+
+            if(currentInput !== storedPin) return alert("Current PIN is incorrect!");
+            if(!newInput) return alert("Please enter a valid new password/PIN!");
+
+            localStorage.setItem('admin_m_pin', newInput);
+            document.getElementById('currentPinInput').value = '';
+            document.getElementById('newPinInput').value = '';
+            alert("Admin PIN/Password Updated Successfully!");
+        }
+
+        function verifyId() {
+            const idVal = document.getElementById('verifyInput').value.trim();
+            if(!idVal) return alert("Enter MGSML ID!");
+            localStorage.setItem('mgsml_verified_id', idVal);
+            loadSavedData();
+            alert("ID Verified Successfully!");
+            closePanels();
+        }
+
+        function processFile(fileInput, callback) {
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    callback(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                callback(null);
+            }
+        }
+
+        function saveChannel() {
+            const name = document.getElementById('channelNameInput').value.trim();
+            const bio = document.getElementById('channelBioInput').value.trim();
+            const fileInput = document.getElementById('channelLogoFile');
+
+            if(!name) return alert("Enter Channel Name!");
+
+            processFile(fileInput, function(base64Image) {
+                localStorage.setItem('channel_name', name);
+                if(bio) localStorage.setItem('channel_bio', bio);
+                if(base64Image) localStorage.setItem('channel_logo', base64Image);
+                loadSavedData();
+                alert("Channel Created Successfully!");
+                closePanels();
+            });
+        }
+
+        function updateProfile() {
+            const name = document.getElementById('editNameInput').value.trim();
+            const bio = document.getElementById('editBioInput').value.trim();
+            const fileInput = document.getElementById('editLogoFile');
+
+            processFile(fileInput, function(base64Image) {
+                if(name) localStorage.setItem('channel_name', name);
+                if(bio) localStorage.setItem('channel_bio', bio);
+                if(base64Image) localStorage.setItem('channel_logo', base64Image);
+                loadSavedData();
+                alert("Profile Updated Successfully!");
+                closePanels();
+            });
+        }
+
+        function claimCoin(type, defaultAmt) {
+            alert("Please complete the required activity to unlock this reward!");
+        }
+    </script>
+</body>
+</html>
